@@ -90,15 +90,7 @@ def submit():
     return ''
 
 
-@app.route("/")
-def index():
-    """
-    Root page, redirects to status
-    """
-    return redirect(url_for('status'))
-
-
-@app.route("/status", methods=["GET"])
+@app.route("/", methods=["GET"])
 @requires_auth
 def status():
     """
