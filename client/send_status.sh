@@ -7,7 +7,7 @@ mac=''
 uptime=''
 user="$(who)"
 delay='10s'
-url="http://192.168.0.6:8000/submit/"
+url="http://olimpiada.lan:8000/submit/"
 
 get_mac_ip() {
 	local _dev="$(ip route | grep '^default ' | head -n 1 | \
@@ -38,7 +38,7 @@ show_status() {
 send_status() {
 	curl \
 		-F "ip=${ip}" \
-		-F "mac=${mac}1" \
+		-F "mac=${mac}" \
 		-F "user=${user}" \
 		-F "uptime=${uptime}" \
 		"${url}"
