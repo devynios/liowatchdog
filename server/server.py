@@ -31,6 +31,8 @@ app.config.from_object(__name__)
 app.config.from_envvar('CHECKSTATUS_SETTINGS', silent=True)
 
 # as per http://flask.pocoo.org/snippets/8/, I like this solution tbh
+
+
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
@@ -41,9 +43,9 @@ def check_auth(username, password):
 def authenticate():
     """Sends a 401 response that enables basic auth"""
     return Response(
-    'Could not verify your access level for that URL.\n'
-    'You have to login with proper credentials', 401,
-    {'WWW-Authenticate': 'Basic realm="Login Required"'})
+        'Could not verify your access level for that URL.\n'
+        'You have to login with proper credentials', 401,
+        {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 
 def requires_auth(f):
@@ -98,10 +100,10 @@ def status():
     otherwise throws httpauth
     """
     return render_template(
-            'status.html',
-            clients=store,
-            now=int(time.now().strftime('%s')),
-            delay=10) # delay in seconds till announcing client as 'MIA'
+        'status.html',
+        clients=store,
+        now=int(time.now().strftime('%s')),
+        delay=10)  # delay in seconds till announcing client as 'MIA'
 
 
 if __name__ == "__main__":
