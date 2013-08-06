@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta http-equiv="refresh" content="20" />
+  <title>Status page</title>
+  <style type="text/css">
+    table.clients {
+      border-collapse: collapse;
+    }
+    table.clients tr > td {
+      border: 1px solid #000000;
+      width: 12.5%;
+    }
+    td.red {
+      background: #FF0000;
+      font-weight: bold;
+    }
+    td.green {
+      background: #00FF00;
+    }
+    td.yellow {
+      background: #FFFF00;
+    }
+    span.user {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  {# User monitoring form #}
+  <table class="clients" width='100%'>
+  {%- for row in clients.values()|batch(8,'&nbsp;') %}
+    <tr>
+    {%- for client in row %}
+      {%- if client == '&nbsp;' %}
+      <td>&nbsp;</td>
+      {%- else %}
+        {%- if (now - client['submitted']) > delay %}
+      <td class="red">
+        {%- elif client['warning'] %}
+      <td class="yellow">
+        {%- else %}
+      <td class="green">
+        {% endif %}
+        {% for user in client['users'] %}
+        <span class="user">{{ user }}</span><br />
+        {% endfor %}
+        Last submit: {{ now - client['submitted'] }}<br />
+        IP: {{ client['ip'] }}<br />
+        MAC: {{ client['mac'] }}<br />
+        uptime: {{ client['uptime'] }}
+      </td>
+      {%- endif -%}
+    {% endfor %}
+    </tr>
+  {%- endfor %}
+  </table>
+</body>
+</html>
