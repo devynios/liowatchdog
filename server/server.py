@@ -11,6 +11,10 @@ import os
 PASSWORD = 'password'
 USERNAME = 'user'
 
+# server settings
+PORT = 8000
+HOST = '0.0.0.0'
+
 #----------------
 
 # local store for state
@@ -52,6 +56,14 @@ def requires_auth(f):
     return decorated
 
 
+def is_suspicious(form):
+    """
+    Returns True if user seems to be suspicious
+    Current criteria - more than one uniq user logged in
+    """
+    return len(set(form['user'].split('\n'))) > 1
+
+
 def make_data(form):
     """
     Constructs a tuple (primary_key, value) for logging
@@ -63,7 +75,7 @@ def make_data(form):
         'mac': form['mac'],
         'uptime': form['uptime'],
         'users': set(form['user'].split('\n')),
-        'warning': len(set(form['user'].split('\n'))) > 1,
+        'warning': is_suspicious(form),
         'submitted': int(time.now().strftime('%s'))
     })
 
@@ -93,8 +105,12 @@ def status():
     Status page, if user is logged in - shows status,
     otherwise throws httpauth
     """
-    return render_template('status.html', clients=store, now=int(time.now().strftime('%s')), delay=10)
+    return render_template(
+            'status.html',
+            clients=store,
+            now=int(time.now().strftime('%s')),
+            delay=10) # delay in seconds till announcing client as 'MIA'
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host=app.config['HOST'], port=app.config['PORT'])
