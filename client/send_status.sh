@@ -5,7 +5,7 @@
 ip=''
 mac=''
 uptime=''
-user="$(who)"
+user=''
 delay='10s'
 url="http://olimpiada.lan:8000/submit/"
 
@@ -21,7 +21,7 @@ get_mac_ip() {
 }
 
 get_user() {
-    user="$(who | awk '{print $1}')"
+    user="$(who | cut -d ' ' -f 1 | sort | uniq)"
 }
 
 get_uptime() {
