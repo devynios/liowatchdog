@@ -8,12 +8,16 @@ import os
 # ---------------
 # SETTINGS
 # login settings
-PASSWORD = 'password'
 USERNAME = 'user'
+PASSWORD = 'password'
 
 # server settings
-PORT = 8000
 HOST = '0.0.0.0'
+PORT = 8000
+
+#
+REFRESH = 20
+TIMEOUT = 20
 
 #----------------
 
@@ -103,7 +107,8 @@ def status():
         'status.html',
         clients=store,
         now=int(time.now().strftime('%s')),
-        delay=10)  # delay in seconds till announcing client as 'MIA'
+        refresh=app.config['REFRESH'],
+        delay=app.config['TIMEOUT'])  # delay in seconds till announcing client as 'MIA'
 
 
 if __name__ == "__main__":
