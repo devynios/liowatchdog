@@ -1,16 +1,23 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from distutils.core import setup
+import ez_setup
+ez_setup.use_setuptools()
+
+from setuptools import setup
 
 setup(
     name='lio_watchdog',
     version='0.0.1',
     packages=['lio_watchdog'],
     package_data={'lio_watchdog': ['templates/*']},
-    scripts=['lio-watchdog.py'],
     description='lio watchdog',
     install_requires=[
-        "Flask",
+        'Flask',
     ],
+    entry_points={
+        'console_scripts': [
+            'lio_watchdog_server = lio_watchdog:run',
+        ],
+    },
 )
