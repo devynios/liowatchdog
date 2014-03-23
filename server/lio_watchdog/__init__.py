@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from flask import Flask, render_template, request, url_for, redirect, session, flash, Response
 from datetime import datetime as time
@@ -24,15 +24,17 @@ TIMEOUT = 20
 # local store for state
 store = {}
 
-app = Flask(__name__)
+app_name = __name__.split('.')[0]
+
+app = Flask(app_name)
 
 # loading default settings from this file
-app.config.from_object(__name__)
+app.config.from_object(app_name)
 
-# loads settings from file in CHECKSTATUS_SETTINGS envvar
-# e.g. export CHECKSTATUS_SETTINGS='/etc/default/checkstatus.cfg' ->
-# -> loads from checkstatus.cfg
-app.config.from_envvar('CHECKSTATUS_SETTINGS', silent=True)
+# loads settings from file in LIOWATCHDOG_SETTINGS envvar
+# e.g. export LIOWATCHDOG_SETTINGS='/etc/default/liowatchdog.cfg' ->
+# -> loads from liowatchdog.cfg
+app.config.from_envvar('LIOWATCHDOG_SETTINGS', silent=True)
 
 # as per http://flask.pocoo.org/snippets/8/, I like this solution tbh
 
@@ -111,5 +113,5 @@ def status():
         delay=app.config['TIMEOUT'])  # delay in seconds till announcing client as 'MIA'
 
 
-if __name__ == "__main__":
+def run():
     app.run(host=app.config['HOST'], port=app.config['PORT'])
