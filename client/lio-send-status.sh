@@ -2,12 +2,32 @@
 
 #set -e -u
 
+url="http://localhost:8000/submit/"
+delay='10s'
+
+usage_error() {
+	echo "usage: $0 [-d DELAY] [URL]"
+	exit 1
+}
+
+if [[ $# -eq 1 ]]; then
+	url="$1"
+elif [[ $# -ge 2 ]]; then
+	if [[ "$1" -ne "-d" ]]; then
+		usage_error
+	fi
+	delay="$2"
+	if [[ $# -eq 3 ]]; then
+		url="$3"
+	elif [[ $# -gt 3 ]]; then
+		usage_error
+	fi
+fi
+
 ip=''
 mac=''
 uptime=''
 user=''
-delay='10s'
-url="http://olimpiada.lan:8000/submit/"
 
 get_mac_ip() {
 	local _dev="$(ip route | grep '^default ' | head -n 1 | \
