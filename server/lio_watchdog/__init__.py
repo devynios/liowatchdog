@@ -24,6 +24,25 @@ TIMEOUT = 20
 # local store for state
 store = {}
 
+import maclist
+client_list = maclist.maclist
+
+clients = {}
+
+def init_clients():
+    for (mac, label) in client_list:
+        clients[mac] = {
+            'name': label,
+            'ip': '',
+            'mac': mac,
+            'uptime': '',
+            'users': '',
+            'warning': False,
+            'submitted': 0,
+        }
+
+init_clients()
+
 app_name = __name__.split('.')[0]
 
 app = Flask(app_name)
@@ -84,8 +103,12 @@ def make_data(form):
         'uptime': form['uptime'],
         'users': set(form['user'].split('\n')),
         'warning': is_suspicious(form),
-        'submitted': int(time.now().strftime('%s'))
+        'submitted': int(time.now().strftime('%s')),
     })
+
+
+def get_clients():
+    return [clients[mac] for (mac, label) in client_list]
 
 
 @app.route("/submit/", methods=["POST"])
@@ -94,7 +117,11 @@ def submit():
     Logs user sent data.
     """
     key, val = make_data(request.form)
-    store[key] = val
+    if key in clients:
+        clients[key] = val
+    else:
+        store[key] = val
+        store[key]['name'] = key
     return ''
 
 
@@ -107,11 +134,28 @@ def status():
     """
     return render_template(
         'status.html',
-        clients=store,
+        clients=get_clients(),
         now=int(time.now().strftime('%s')),
         refresh=app.config['REFRESH'],
-        delay=app.config['TIMEOUT'])  # delay in seconds till announcing client as 'MIA'
+        delay=app.config['TIMEOUT'],
+    )
+
+
+@app.route("/other/", methods=["GET"])
+@requires_auth
+def other_status():
+    """
+    Status page, if user is logged in - shows status,
+    otherwise throws httpauth
+    """
+    return render_template(
+        'status.html',
+        clients=store.values(),
+        now=int(time.now().strftime('%s')),
+        refresh=app.config['REFRESH'],
+        delay=app.config['TIMEOUT'],
+    )
 
 
 def run():
-    app.run(host=app.config['HOST'], port=app.config['PORT'])
+    app.run(host=app.config['HOST'], port=app.config['PORT'], debug=True)

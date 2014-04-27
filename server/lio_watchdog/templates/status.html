@@ -5,33 +5,57 @@
   <meta http-equiv="refresh" content="{{ refresh }}" />
   <title>Status page</title>
   <style type="text/css">
+    body {
+        font-family: "Dejavu Sans";
+        font-size: 14px;
+    }
     table.clients {
-      border-collapse: collapse;
+        border-collapse: collapse;
     }
     table.clients tr > td {
-      border: 1px solid #000000;
-      width: 12.5%;
+        border: 1px solid #000000;
+        width: 16%;
+    }
+    table.clients tr > td.side {
+        width: 2%;
     }
     td.red {
-      background: #FF0000;
-      font-weight: bold;
+        background: #FF0000;
+        font-weight: bold;
+        color: #f66;
     }
     td.green {
-      background: #00FF00;
+        background: #00FF00;
+        color: #6f6;
     }
     td.yellow {
-      background: #FFFF00;
+        background: #FFFF00;
+        color: #ff6;
     }
     span.user {
-      font-size: 24px;
+        font-size: 24px;
     }
+    span.data {
+        font-family: "Dejavu Sans Mono";
+        font-size: 12px;
+        color: #000;
+    }
+    span.seat {
+        font-size: 16px;
+    }
+/*
+div.kick { position:relative; }
+div.kick div.over { display:none; position:absolute; z-index:100; }
+div.kick:hover div.over { background-color: white; display:block; }
+*/
   </style>
 </head>
 <body>
   {# User monitoring form #}
   <table class="clients" width='100%'>
-  {%- for row in clients.values()|batch(8,'&nbsp;') %}
+  {%- for row in clients|batch(6,'&nbsp;') %}
     <tr>
+      <td class="side">&nbsp;</td>
     {%- for client in row %}
       {%- if client == '&nbsp;' %}
       <td>&nbsp;</td>
@@ -43,16 +67,18 @@
         {%- else %}
       <td class="green">
         {% endif %}
-        {% for user in client['users'] %}
-        <span class="user">{{ user }}</span><br />
-        {% endfor %}
-        Last submit: {{ now - client['submitted'] }}<br />
-        IP: {{ client['ip'] }}<br />
-        MAC: {{ client['mac'] }}<br />
-        uptime: {{ client['uptime'] }}
+        <div class="kick"><span class="data seat">{{ client['name'] }}</span> : <span class="data">{{ now - client['submitted'] }}</span><div class="over">
+          IP: <span class="data">{{ client['ip'] }}</span><br />
+          MAC: <span class="data">{{ client['mac'] }}</span><br />
+          uptime: <span class="data">{{ client['uptime'] }}</span><br />
+          {% for user in client['users'] %}
+          <span class="user">{{ user }}</span><br />
+          {% endfor %}
+        </div></div>
       </td>
       {%- endif -%}
     {% endfor %}
+      <td class="side">&nbsp;</td>
     </tr>
   {%- endfor %}
   </table>

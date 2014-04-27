@@ -11,6 +11,7 @@ setup(
     version='0.0.1',
     packages=['lio_watchdog'],
     package_data={'lio_watchdog': ['templates/*']},
+    scripts=['lio_watchdog_server.py'],
     description='lio watchdog',
     install_requires=[
         'Flask',
