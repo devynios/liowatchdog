@@ -16,7 +16,7 @@ HOST = '0.0.0.0'
 PORT = 8000
 
 #
-REFRESH = 20
+REFRESH = 1
 TIMEOUT = 20
 
 #----------------
@@ -111,6 +111,12 @@ def get_clients():
     return [clients[mac] for (mac, label) in client_list]
 
 
+def get_clients_reverse():
+    x = [clients[mac] for (mac, label) in client_list]
+    x.reverse()
+    return x
+
+
 @app.route("/submit/", methods=["POST"])
 def submit():
     """
@@ -118,7 +124,9 @@ def submit():
     """
     key, val = make_data(request.form)
     if key in clients:
+        name = clients[key]['name']
         clients[key] = val
+        clients[key]['name'] = name
     else:
         store[key] = val
         store[key]['name'] = key
@@ -135,6 +143,22 @@ def status():
     return render_template(
         'status.html',
         clients=get_clients(),
+        now=int(time.now().strftime('%s')),
+        refresh=app.config['REFRESH'],
+        delay=app.config['TIMEOUT'],
+    )
+
+
+@app.route("/reverse/", methods=["GET"])
+@requires_auth
+def reverse():
+    """
+    Status page, if user is logged in - shows status,
+    otherwise throws httpauth
+    """
+    return render_template(
+        'status.html',
+        clients=get_clients_reverse(),
         now=int(time.now().strftime('%s')),
         refresh=app.config['REFRESH'],
         delay=app.config['TIMEOUT'],
