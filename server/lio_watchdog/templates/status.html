@@ -14,10 +14,10 @@
     }
     table.clients tr > td {
         border: 1px solid #000000;
-        width: 16%;
+        width: 14%;
     }
     table.clients tr > td.side {
-        width: 2%;
+        width: 1%;
     }
     td.red {
         background: #FF0000;
@@ -53,8 +53,8 @@ div.kick:hover div.over { background-color: white; display:block; }
 </head>
 <body>
   {# User monitoring form #}
-  <table class="clients" width='100%'>
-  {%- for row in clients|batch(6,'&nbsp;') %}
+  <table class="clients" width="100%">
+  {%- for row in clients|batch(7,'&nbsp;') %}
     <tr>
       <td class="side">&nbsp;</td>
     {%- for client in row %}
@@ -69,9 +69,9 @@ div.kick:hover div.over { background-color: white; display:block; }
       <td class="green">
         {% endif %}
         <div class="kick"><span class="data seat">{{ client['name'] }}</span> : <span class="data">{{ now - client['submitted'] }}</span><div class="over">
-          IP: <span class="data">{{ client['ip'] }}</span><br />
-          MAC: <span class="data">{{ client['mac'] }}</span><br />
-          uptime: <span class="data">{{ client['uptime'] }}</span><br />
+          <span class="data">{{ client['ip'] }}</span><br />
+          <span class="data">{{ client['mac'] }}</span><br />
+          <span class="data">{{ client['uptime'] }} up</span><br />
           {% for user in client['users'] %}
           <span class="user">{{ user }}</span><br />
           {% endfor %}
